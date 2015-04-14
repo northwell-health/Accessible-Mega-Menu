@@ -49,6 +49,7 @@ limitations under the License.
     var pluginName = "accessibleMegaMenu",
         defaults = {
             uuidPrefix: "accessible-megamenu", // unique ID's are required to indicate aria-owns, aria-controls and aria-labelledby
+            menuSelector: "> *:first", // selector for the menu element within the nav
             menuClass: "accessible-megamenu", // default css class used to define the megamenu styling
             topNavItemClass: "accessible-megamenu-top-nav-item", // default css class for a top-level navigation item in the megamenu
             panelClass: "accessible-megamenu-panel", // default css class for a megamenu panel
@@ -706,7 +707,7 @@ limitations under the License.
                 var that = this,
                     settings = this.settings,
                     nav = this.nav = $(this.element),
-                    menu = this.menu = nav.children().first(),
+                    menu = this.menu = nav.find(settings.menuSelector).first(),
                     topnavitems = this.topnavitems = menu.children();
                 nav.attr("role", "navigation");
                 menu.addClass(settings.menuClass);
@@ -956,6 +957,9 @@ limitations under the License.
 
         &#47;* css class used to define the megamenu styling *&#47;
         menuClass: &quot;nav-menu&quot;,
+        
+        &#47;* selector for the menu element within the nav *&#47;
+        menuSelector: "> *:first",
 
         &#47;* css class for a top-level navigation item in the megamenu *&#47;
         topNavItemClass: &quot;nav-item&quot;,
@@ -979,6 +983,7 @@ limitations under the License.
      * @param {object} [options] Mega Menu options
      * @param {string} [options.uuidPrefix=accessible-megamenu] - Prefix for generated unique id attributes, which are required to indicate aria-owns, aria-controls and aria-labelledby
      * @param {string} [options.menuClass=accessible-megamenu] - CSS class used to define the megamenu styling
+     * @param {string} [options.menuSelector=>*:first] - Selector for the menu element within the nav
      * @param {string} [options.topNavItemClass=accessible-megamenu-top-nav-item] - CSS class for a top-level navigation item in the megamenu
      * @param {string} [options.panelClass=accessible-megamenu-panel] - CSS class for a megamenu panel
      * @param {string} [options.panelGroupClass=accessible-megamenu-panel-group] - CSS class for a group of items within a megamenu panel
@@ -1050,3 +1055,4 @@ limitations under the License.
         }
     });
 }(jQuery, window, document));
+

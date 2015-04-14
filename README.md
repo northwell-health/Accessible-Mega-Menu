@@ -78,7 +78,7 @@ By default, accessibleMegaMenu uses the the following CSS classes to define the 
         
         /* default css class used to define the megamenu styling */
         menuClass: "accessible-megamenu",
-        
+
         /* default css class for a top-level navigation item in the megamenu */
         topNavItemClass: "accessible-megamenu-top-nav-item",
         
@@ -120,6 +120,9 @@ The following initializes the first nav element in the document as an accessible
         
         /* css class used to define the megamenu styling */
         menuClass: "nav-menu",
+
+        /* selector for the menu element within the nav */
+        menuSelector: "> *:first",
         
         /* css class for a top-level navigation item in the megamenu */
         topNavItemClass: "nav-item",
@@ -369,6 +372,9 @@ Putting it all together, here is the completed example:
             
             /* css class used to define the megamenu styling */
             menuClass: "nav-menu",
+
+            /* selector for the menu element within the nav */
+            menuSelector: "> ul:first",
             
             /* css class for a top-level navigation item in the megamenu */
             topNavItemClass: "nav-item",
