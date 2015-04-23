@@ -49,7 +49,7 @@ limitations under the License.
     var pluginName = "accessibleMegaMenu",
         defaults = {
             uuidPrefix: "accessible-megamenu", // unique ID's are required to indicate aria-owns, aria-controls and aria-labelledby
-            menuSelector: "> *:first", // selector for the menu element within the nav
+            menuSelector: "> *:first", // which menu item in the nav element to be selected
             menuClass: "accessible-megamenu", // default css class used to define the megamenu styling
             topNavItemClass: "accessible-megamenu-top-nav-item", // default css class for a top-level navigation item in the megamenu
             panelClass: "accessible-megamenu-panel", // default css class for a megamenu panel
@@ -230,6 +230,7 @@ limitations under the License.
             _toggleExpandedEventHandlers.call(this, true);
 
             if (hide) {
+	            topli.removeClass(settings.openClass);
                 topli = menu.find('.' + settings.topNavItemClass + ' .' + settings.openClass + ':first').closest('.' + settings.topNavItemClass);
                 if (!(topli.is(event.relatedTarget) || topli.has(event.relatedTarget).length > 0)) {
                     if ((event.type === 'mouseout' || event.type === 'focusout') && topli.has(document.activeElement).length > 0) {
@@ -257,6 +258,7 @@ limitations under the License.
                 }
             } else {
                 clearTimeout(that.focusTimeoutID);
+                menu.find('.' + settings.topNavItemClass + '.' + settings.openClass).not(topli).removeClass(settings.openClass);
                 topli.siblings()
                     .find('[aria-expanded]')
                     .attr('aria-expanded', 'false')
@@ -268,6 +270,7 @@ limitations under the License.
                     .addClass(settings.openClass)
                     .filter('.' + settings.panelClass)
                     .attr('aria-hidden', 'false');
+                topli.addClass(settings.openClass);
                 if (event.type === 'mouseover' && target.is(':tabbable') && topli.length === 1 && panel.length === 0 && menu.has(document.activeElement).length > 0) {
                     target.focus();
                     that.justFocused = false;
@@ -292,7 +295,7 @@ limitations under the License.
             if (topli.length === 1
                     && panel.length === 0
                     && topli.find('.' + this.settings.panelClass).length === 1) {
-                if (!target.hasClass(this.settings.openClass)) {
+                if (!target.hasClass(this.settings.openClass) && !topli.hasClass(this.settings.openClass)) {
                     event.preventDefault();
                     event.stopPropagation();
                     _togglePanel.call(this, event);
@@ -305,7 +308,16 @@ limitations under the License.
                     } else if (isTouch) {
                         event.preventDefault();
                         event.stopPropagation();
-                        _togglePanel.call(this, event, target.hasClass(this.settings.openClass));
+                        //if (target.is('a')) {
+	                    //    var href = target.attr('href');
+	                    //    var a_target;
+	                    //    if (a_target = target.attr('target')) {
+		                //        window.open(href, a_target);
+	                    //    } else {
+		                //        document.location = href;
+	                    //    }
+                        //}
+                        _togglePanel.call(this, event, target.hasClass(this.settings.openClass) || topli.hasClass(this.settings.openClass));
                     }
                 }
             }
