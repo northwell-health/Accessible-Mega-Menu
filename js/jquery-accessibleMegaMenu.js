@@ -227,6 +227,9 @@ limitations under the License.
                 panel = target.hasClass(settings.panelClass) ? target : target.closest('.' + settings.panelClass),
                 newfocus;
 
+            // if clickOutsideHandler calls this, the topli will never be found.
+            if ( ! topli.length) topli = menu.find('.' + settings.topNavItemClass + '.' + settings.openClass);
+
             _toggleExpandedEventHandlers.call(this, true);
 
             if (hide) {
@@ -295,6 +298,8 @@ limitations under the License.
             if (topli.length === 1
                     && panel.length === 0
                     && topli.find('.' + this.settings.panelClass).length === 1) {
+                        // See _clickOutsideHandler for an explanation
+                        clearTimeout(this.focusTimeoutID);
                 if (!target.hasClass(this.settings.openClass) && !topli.hasClass(this.settings.openClass)) {
                     event.preventDefault();
                     event.stopPropagation();
@@ -325,13 +330,22 @@ limitations under the License.
 
         /**
          * @name jQuery.fn.accessibleMegaMenu~_clickOutsideHandler
-         * @desc Handle click event outside of a the megamenu
+         * @desc Handle click event outside of the megamenu
          * @param {event} Event object
          * @memberof jQuery.fn.accessibleMegaMenu
          * @inner
          * @private
          */
         _clickOutsideHandler = function (event) {
+            // This ought to be run either way.
+            //
+            // If there is a loss of focus and the user clicked within the mega menu,
+            // we don't want to hide the menu.
+            //
+            // If there is a loss of focus and the user clicked BEYOND the mega menu,
+            // this method should do the hiding, not the timed focus out handler.
+            clearTimeout(this.focusTimeoutID);
+
             if ($(event.target).closest(this.menu).length === 0) {
                 event.preventDefault();
                 event.stopPropagation();
@@ -977,7 +991,7 @@ limitations under the License.
 
         &#47;* css class used to define the megamenu styling *&#47;
         menuClass: &quot;nav-menu&quot;,
-        
+
         &#47;* selector for the menu element within the nav *&#47;
         menuSelector: "> *:first",
 
