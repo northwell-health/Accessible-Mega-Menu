@@ -289,7 +289,7 @@ limitations under the License.
          * @private
          */
         _clickHandler = function (event) {
-            var target = $(event.target),
+            var target = $(event.currentTarget),
                 topli = target.closest('.' + this.settings.topNavItemClass),
                 panel = target.closest('.' + this.settings.panelClass);
             if (topli.length === 1
@@ -643,7 +643,7 @@ limitations under the License.
          * @private
          */
         _mouseDownHandler = function (event) {
-            if ($(event.target).is(":focusable, ." + this.settings.panelClass)) {
+            if ($(event.target).is(this.settings.panelClass) || $(event.target).closest(":focusable").length) {
                 this.mouseFocused = true;
             }
             this.mouseTimeoutID = setTimeout(function () {
@@ -716,11 +716,19 @@ limitations under the License.
              * @instance
              */
             init: function () {
-                var that = this,
-                    settings = this.settings,
-                    nav = this.nav = $(this.element),
+                var settings = this.settings,
+                    nav = $(this.element),
                     menu = this.menu = nav.find(settings.menuSelector).first(),
-                    topnavitems = this.topnavitems = menu.children();
+                    topnavitems = menu.children();
+                this.start(settings, nav, menu, topnavitems);
+            },
+
+            start: function(settings, nav, menu, topnavitems) {
+                var that = this;
+                this.settings = settings;
+                this.menu = menu;
+                this.topnavitems = topnavitems;
+
                 nav.attr("role", "navigation");
                 menu.addClass(settings.menuClass);
                 topnavitems.each(function (i, topnavitem) {
@@ -1006,10 +1014,12 @@ limitations under the License.
     $.fn[pluginName] = function (options) {
         return this.each(function () {
             if (!$.data(this, "plugin_" + pluginName)) {
-                $.data(this, "plugin_" + pluginName, new AccessibleMegaMenu(this, options));
+                $.data(this, "plugin_" + pluginName, new $.fn[pluginName].AccessibleMegaMenu(this, options));
             }
         });
     };
+
+    $.fn[pluginName].AccessibleMegaMenu = AccessibleMegaMenu;
 
     /* :focusable and :tabbable selectors from
        https://raw.github.com/jquery/jquery-ui/master/ui/jquery.ui.core.js */
