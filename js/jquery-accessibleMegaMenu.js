@@ -292,9 +292,18 @@ limitations under the License.
          * @private
          */
         _clickHandler = function (event) {
+
             var target = $(event.currentTarget),
                 topli = target.closest('.' + this.settings.topNavItemClass),
                 panel = target.closest('.' + this.settings.panelClass);
+
+                // Fix for mobile
+                if ( !topli.length && !panel.length) {
+                    target = $(event.target),
+                        topli = target.closest('.' + this.settings.topNavItemClass),
+                        panel = target.closest('.' + this.settings.panelClass);
+                }
+
             if (topli.length === 1
                     && panel.length === 0
                     && topli.find('.' + this.settings.panelClass).length === 1) {
@@ -1091,4 +1100,3 @@ limitations under the License.
         }
     });
 }(jQuery, window, document));
-
