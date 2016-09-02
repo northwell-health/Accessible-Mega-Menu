@@ -56,7 +56,8 @@ limitations under the License.
             panelGroupClass: "accessible-megamenu-panel-group", // default css class for a group of items within a megamenu panel
             hoverClass: "hover", // default css class for the hover state
             focusClass: "focus", // default css class for the focus state
-            openClass: "open" // default css class for the open state
+            openClass: "open", // default css class for the open state
+            tapEvent: "touchstart" // touch/mouse event to listen for on touch-detected devices
         },
         Keyboard = {
             BACKSPACE: 8,
@@ -790,7 +791,7 @@ limitations under the License.
                     .on("mousedown.accessible-megamenu", $.proxy(_mouseDownHandler, this));
 
                 if (isTouch) {
-                    menu.on("touchstart.accessible-megamenu",  $.proxy(_clickHandler, this));
+                    menu.on(settings.tapEvent + ".accessible-megamenu",  $.proxy(_clickHandler, this));
                 }
 
                 menu.find("hr").attr("role", "separator");
@@ -1020,7 +1021,10 @@ limitations under the License.
         focusClass: &quot;focus&quot;,
 
         &#47;* css class for the open state *&#47;
-        openClass: &quot;open&quot;
+        openClass: &quot;open&quot;,
+
+        &#47;* touch/mouse event to listen for on touch-detected devices *&#47;
+        tapEvent: &quot;touchstart&quot;
     });
 &lt;/script&gt;
      * @param {object} [options] Mega Menu options
@@ -1033,6 +1037,7 @@ limitations under the License.
      * @param {string} [options.hoverClass=hover] - CSS class for the hover state
      * @param {string} [options.focusClass=focus] - CSS class for the focus state
      * @param {string} [options.openClass=open] - CSS class for the open state
+     * @param {string} [options.tapEvent=touchstart] - Touch/mouse event to listen for on touch-detected devices
      */
     $.fn[pluginName] = function (options) {
         return this.each(function () {

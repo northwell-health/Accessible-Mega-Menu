@@ -75,31 +75,37 @@ By default, accessibleMegaMenu uses the the following CSS classes to define the 
     defaults = {
         /* unique ID's are required to indicate aria-owns, aria-controls and aria-labelledby */
         uuidPrefix: "accessible-megamenu",
-        
+
         /* default css class used to define the megamenu styling */
         menuClass: "accessible-megamenu",
 
+        /* selector for the menu element within the nav */
+        menuSelector: "> *:first",
+
         /* default css class for a top-level navigation item in the megamenu */
         topNavItemClass: "accessible-megamenu-top-nav-item",
-        
+
         /* default css class for a megamenu panel */
         panelClass: "accessible-megamenu-panel",
-        
+
         /* default css class for a group of items within a megamenu panel */
         panelGroupClass: "accessible-megamenu-panel-group",
-        
+
         /* default css class for the hover state */
         hoverClass: "hover",
-        
+
         /* default css class for the focus state */
         focusClass: "focus",
-        
+
         /* default css class for the open state */
-        openClass: "open" 
+        openClass: "open",
+
+        /* touch/mouse event to listen for on touch-detected devices */
+        tapEvent: "touchstart"
     }
 ```
 
-You can optionally override the defaults to use the CSS classes you may have already defined for your mega menu. 
+You can optionally override the defaults to use the CSS classes you may have already defined for your mega menu.
 
 ### JavaScript
 
@@ -114,33 +120,36 @@ The following initializes the first nav element in the document as an accessible
 
 ```js
     $("nav:first").accessibleMegaMenu({
-        /* prefix for generated unique id attributes, which are required 
+        /* prefix for generated unique id attributes, which are required
            to indicate aria-owns, aria-controls and aria-labelledby */
         uuidPrefix: "accessible-megamenu",
-        
+
         /* css class used to define the megamenu styling */
         menuClass: "nav-menu",
 
         /* selector for the menu element within the nav */
         menuSelector: "> *:first",
-        
+
         /* css class for a top-level navigation item in the megamenu */
         topNavItemClass: "nav-item",
-        
+
         /* css class for a megamenu panel */
         panelClass: "sub-nav",
-        
+
         /* css class for a group of items within a megamenu panel */
         panelGroupClass: "sub-nav-group",
-        
+
         /* css class for the hover state */
         hoverClass: "hover",
-        
+
         /* css class for the focus state */
         focusClass: "focus",
-        
+
         /* css class for the open state */
-        openClass: "open"
+        openClass: "open",
+
+        /* touch/mouse event to listen for on touch-detected devices */
+        tapEvent: "touchstart"
     });
 ```
 ### CSS
@@ -177,14 +186,14 @@ Following is some rudimentary CSS for our example which enables the showing/hidi
         border: 1px solid transparent;
     }
 
-    /* focus/open states of first descendant link within a top level 
+    /* focus/open states of first descendant link within a top level
        navigation item */
     .nav-item > a:focus,
     .nav-item > a.open {
         border: 1px solid #dedede;
     }
 
-    /* open state of first descendant link within a top level 
+    /* open state of first descendant link within a top level
        navigation item */
     .nav-item > a.open {
         background-color: #fff;
@@ -222,7 +231,7 @@ Following is some rudimentary CSS for our example which enables the showing/hidi
         list-style-type: none;
         margin: 0;
         padding: 0;
-    }   
+    }
 ```
 
 Putting it all together, here is the completed example:
@@ -234,7 +243,7 @@ Putting it all together, here is the completed example:
     <meta charset="UTF-8">
     <title>Simple Accessible Mega Menu Example</title>
     <style>
-        /* Rudimentary mega menu CSS for demonstration */    
+        /* Rudimentary mega menu CSS for demonstration */
 
         /* mega menu list */
         .nav-menu {
@@ -263,14 +272,14 @@ Putting it all together, here is the completed example:
             border: 1px solid transparent;
         }
 
-        /* focus/open states of first descendant link within a top level 
+        /* focus/open states of first descendant link within a top level
            navigation item */
         .nav-item > a:focus,
         .nav-item > a.open {
             border: 1px solid #dedede;
         }
 
-        /* open state of first descendant link within a top level 
+        /* open state of first descendant link within a top level
            navigation item */
         .nav-item > a.open {
             background-color: #fff;
@@ -308,7 +317,7 @@ Putting it all together, here is the completed example:
             list-style-type: none;
             margin: 0;
             padding: 0;
-        }     
+        }
     </style>
     </head>
     <body>
@@ -356,7 +365,7 @@ Putting it all together, here is the completed example:
             </li>
         </ul>
     </nav>
-    
+
     <!-- include jquery -->
     <script src="//code.jquery.com/jquery-1.10.1.min.js"></script>
 
@@ -366,35 +375,38 @@ Putting it all together, here is the completed example:
     <!-- initialize a selector as an accessibleMegaMenu -->
     <script>
         $("nav:first").accessibleMegaMenu({
-            /* prefix for generated unique id attributes, which are required 
+            /* prefix for generated unique id attributes, which are required
                to indicate aria-owns, aria-controls and aria-labelledby */
             uuidPrefix: "accessible-megamenu",
-            
+
             /* css class used to define the megamenu styling */
             menuClass: "nav-menu",
 
             /* selector for the menu element within the nav */
             menuSelector: "> ul:first",
-            
+
             /* css class for a top-level navigation item in the megamenu */
             topNavItemClass: "nav-item",
-            
+
             /* css class for a megamenu panel */
             panelClass: "sub-nav",
-            
+
             /* css class for a group of items within a megamenu panel */
             panelGroupClass: "sub-nav-group",
-            
+
             /* css class for the hover state */
             hoverClass: "hover",
-            
+
             /* css class for the focus state */
             focusClass: "focus",
-            
+
             /* css class for the open state */
-            openClass: "open"
+            openClass: "open",
+
+            /* touch/mouse event to listen for on touch-detected devices */
+            tapEvent: "touchstart"
         });
     </script>
     </body>
     </html>
-```    
+```
