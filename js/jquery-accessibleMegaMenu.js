@@ -57,6 +57,7 @@ limitations under the License.
             hoverClass: "hover", // default css class for the hover state
             focusClass: "focus", // default css class for the focus state
             openClass: "open", // default css class for the open state
+            openDelay: 0, // default open delay when opening menu via mouseover
             tapEvent: "touchstart" // touch/mouse event to listen for on touch-detected devices
         },
         Keyboard = {
@@ -333,7 +334,7 @@ limitations under the License.
          */
         _clickHandler = function (event) {
 
-            var target = $(event.currentTarget),
+            var target = $(event.target).closest(':tabbable'),
                 topli = target.closest('.' + this.settings.topNavItemClass),
                 panel = target.closest('.' + this.settings.panelClass);
 
@@ -714,6 +715,7 @@ limitations under the License.
             if ($(event.target).is(this.settings.panelClass) || $(event.target).closest(":focusable").length) {
                 this.mouseFocused = true;
             }
+            clearTimeout(this.mouseTimeoutID);
             this.mouseTimeoutID = setTimeout(function () {
                 clearTimeout(this.focusTimeoutID);
             }, 1);
@@ -729,12 +731,14 @@ limitations under the License.
          */
         _mouseOverHandler = function (event) {
             clearTimeout(this.mouseTimeoutID);
-            $(event.target)
-                .addClass(this.settings.hoverClass);
-            _togglePanel.call(this, event);
+            var that = this;
+            this.mouseTimeoutID = setTimeout(function () {
+                $(event.target).addClass(that.settings.hoverClass);
+                _togglePanel.call(that, event);
             if ($(event.target).is(':tabbable')) {
                 $('html').on('keydown.accessible-megamenu', $.proxy(_keyDownHandler, event.target));
             }
+            }, this.settings.openDelay);
         };
 
         /**
@@ -746,6 +750,7 @@ limitations under the License.
          * @private
          */
         _mouseOutHandler = function (event) {
+            clearTimeout(this.mouseTimeoutID);
             var that = this;
             $(event.target)
                 .removeClass(that.settings.hoverClass);
@@ -813,13 +818,13 @@ limitations under the License.
                     if (topnavitempanel.length) {
                         _addUniqueId.call(that, topnavitempanel);
                         topnavitemlink.attr({
-                            "aria-haspopup": true,
+                            // "aria-haspopup": true,
                             "aria-controls": topnavitempanel.attr("id"),
                             "aria-expanded": false
                         });
 
                         topnavitempanel.attr({
-                            "role": "group",
+                            "role": "region",
                             "aria-expanded": false,
                             "aria-hidden": true
                         })
@@ -1085,6 +1090,7 @@ limitations under the License.
      * @param {string} [options.hoverClass=hover] - CSS class for the hover state
      * @param {string} [options.focusClass=focus] - CSS class for the focus state
      * @param {string} [options.openClass=open] - CSS class for the open state
+     * @param {string} [options.openDelay=0] - Open delay when opening menu via mouseover
      * @param {string} [options.tapEvent=touchstart] - Touch/mouse event to listen for on touch-detected devices
      */
     $.fn[pluginName] = function (options) {
