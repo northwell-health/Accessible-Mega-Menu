@@ -165,6 +165,7 @@ limitations under the License.
             keydownTimeoutDuration = 1000,
             keydownSearchString = "",
             isTouch = typeof window.hasOwnProperty === "function" && !!window.hasOwnProperty("ontouchstart"),
+            documentHadFocus = true,
             _getPlugin,
             _addUniqueId,
             _togglePanel,
@@ -177,7 +178,8 @@ limitations under the License.
             _mouseDownHandler,
             _mouseOverHandler,
             _mouseOutHandler,
-            _toggleExpandedEventHandlers;
+            _toggleExpandedEventHandlers,
+            _checkDocumentFocus;
 
         /**
          * @name jQuery.fn.accessibleMegaMenu~_getPlugin
@@ -225,11 +227,35 @@ limitations under the License.
                 settings = this.settings,
                 menu = this.menu,
                 topli = target.closest('.' + settings.topNavItemClass),
-                panel = target.hasClass(settings.panelClass) ? target : target.closest('.' + settings.panelClass),
+                //panel = target.hasClass(settings.panelClass) ? target : target.closest('.' + settings.panelClass),
+                panel,
+                viaClickOutsideHandler,
                 newfocus;
 
-            // if clickOutsideHandler calls this, the topli will never be found.
-            if ( ! topli.length) topli = menu.find('.' + settings.topNavItemClass + '.' + settings.openClass);
+            // If _clickOutsideHandler calls this, the topli will never be found.
+            // Also presuming this condition only happens via _clickOutsideHandler.
+            if ((viaClickOutsideHandler = ! topli.length)) {
+                topli = menu.find('.' + settings.topNavItemClass + '.' + settings.openClass);
+            }
+
+            // Panel can be target itself,
+            // subnav within list item,
+            // - but the target could be either the list item or its link, if any.
+            //
+            if (target.hasClass(settings.panelClass)) {
+
+                panel = target;
+
+            } else {
+
+                var dotPanelClass = '.' + settings.panelClass;
+                panel = target.closest(dotPanelClass);
+
+                // This is the case that was not covered by the original ternary conditional.
+                if ( ! panel.length) {
+                    panel = topli.find(dotPanelClass);
+                }
+            }
 
             _toggleExpandedEventHandlers.call(this, true);
 
@@ -282,6 +308,19 @@ limitations under the License.
 
                 _toggleExpandedEventHandlers.call(that);
             }
+
+            // We don't want to trigger the panel-opened event if this method
+            // is called via _clickOutsideHandler.
+            if ( ! viaClickOutsideHandler) {
+                menu.trigger(jQuery.Event('panel-opened.accessible-megamenu', {
+                        event: event,
+                        list_item: topli,
+                        panel: panel
+                    }),
+                    [topli, panel]
+                );
+            }
+
         };
 
         /**
@@ -398,7 +437,7 @@ limitations under the License.
                 .on('click.accessible-megamenu', $.proxy(_clickHandler, this));
             this.justFocused = !this.mouseFocused;
             this.mouseFocused = false;
-            if (this.panels.not(panel).filter('.' + this.settings.openClass).length) {
+            if (this.panels.not(panel).filter('.' + this.settings.openClass).length && documentHadFocus) {
                 _togglePanel.call(this, event);
             }
         };
@@ -412,6 +451,8 @@ limitations under the License.
          * @private
          */
         _focusOutHandler = function (event) {
+            _checkDocumentFocus();
+
             this.justFocused = false;
             var that = this,
                 target = $(event.target),
@@ -438,9 +479,12 @@ limitations under the License.
                     });
                 }, 25);
             } else {
-                that.focusTimeoutID = setTimeout(function () {
-                    _togglePanel.call(that, event, true);
-                }, 300);
+                // If the focusOut was out of the window, let's not presume it's a loss of focus from the menu.
+                if (documentHadFocus) {
+                    that.focusTimeoutID = setTimeout(function () {
+                        _togglePanel.call(that, event, true);
+                    }, 300);
+                }
             }
         };
 
@@ -727,6 +771,10 @@ limitations under the License.
                    To respond to the change to collapse the panel, we must add a listener for a DOMAttrModified event. */
                 menu.find('[aria-expanded=true].' + this.settings.panelClass).on('DOMAttrModified.accessible-megamenu', $.proxy(_DOMAttrModifiedHandler, this));
             }
+        };
+
+        _checkDocumentFocus = function() {
+            return (documentHadFocus = document.hasFocus());
         };
 
         /* public attributes and methods ------------------------- */
