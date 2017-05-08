@@ -315,7 +315,7 @@ limitations under the License.
 
             // We don't want to trigger the panel-opened event if this method
             // is called via _clickOutsideHandler.
-            if ( ! viaClickOutsideHandler) {
+            if ( ! viaClickOutsideHandler && panel.is(':visible')) {
                 menu.trigger(jQuery.Event('panel-opened.accessible-megamenu', {
                         event: event,
                         hide: hide,
