@@ -231,6 +231,7 @@ limitations under the License.
                 //panel = target.hasClass(settings.panelClass) ? target : target.closest('.' + settings.panelClass),
                 panel,
                 viaClickOutsideHandler,
+                panelWasOpen,
                 newfocus;
 
             // If _clickOutsideHandler calls this, the topli will never be found.
@@ -257,6 +258,8 @@ limitations under the License.
                     panel = topli.find(dotPanelClass);
                 }
             }
+
+            panelWasOpen = panel.is(':visible');
 
             _toggleExpandedEventHandlers.call(this, true);
 
@@ -315,10 +318,12 @@ limitations under the License.
             if ( ! viaClickOutsideHandler) {
                 menu.trigger(jQuery.Event('panel-opened.accessible-megamenu', {
                         event: event,
+                        hide: hide,
                         list_item: topli,
-                        panel: panel
+                        panel: panel,
+                        panel_was_open: panelWasOpen
                     }),
-                    [topli, panel]
+                    [topli, panel, hide, panelWasOpen]
                 );
             }
 
@@ -1159,3 +1164,4 @@ limitations under the License.
         }
     });
 }(jQuery, window, document));
+
